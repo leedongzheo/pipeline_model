@@ -16,8 +16,7 @@ class Trainer:
         self.train_dices, self.val_dices = [], []
         self.best_model, self.best_dice, self.best_epoch = None, 0.0, 0
         self.log_interval = 1  # Số bước để log
-    # def load_checkpoint(self, path):
-    #      self.op
+
     def save_checkpoint(self, epoch, dice, filename, mode = "pretrained"):
         if mode == "train":
             self.start_epoch = 0
@@ -44,10 +43,6 @@ class Trainer:
         self.best_dice, self.best_epoch = self.checkpoint['best_dice'], self.checkpoint['best_epoch']
 
     def train(self, train_loader, val_loader):
-        # x1=torch.tensor(0.3)
-        # x2=torch.tensor(0.4)
-        # self.criterion = self.criterion(x1,x2)
-        # print(self.criterion)
         print("lr0", lr0)
         print("bach_size", bach_size)
         print("weight_decay", weight_decay)
@@ -127,22 +122,10 @@ class Trainer:
                 break
             torch.cuda.empty_cache()
             gc.collect()
-        # source_file1='last_model.pth'
-        # source_file2='best_model.pth'
-        # output_folder = f"{BASE_OUTPUT}\\output_epoch{self.best_epoch}_dice{self.avg_val_dice:.4f}"
-        # os.makedirs(output_folder, exist_ok=True)
-        # # Di chuyển file
-        # shutil.move(source_file1, output_folder)
-        # shutil.move(source_file2, output_folder)
-        # print(f"Đã di chuyển file tới: {output_folder}")
+
         print(f"[INFO] Training completed in {time.time() - start_time:.2f}s")
 
     def pretrained(self, train_loader, val_loader, checkpoint_path):
-        
-        # x1=torch.tensor(0.3)
-        # x2=torch.tensor(0.4)
-        # self.criterion = self.criterion(x1,x2)
-        # print(self.criterion)
         print("lr0",lr0)
         print("bach_size",bach_size)
         print("weight_decay",weight_decay)
@@ -151,7 +134,6 @@ class Trainer:
         print("numclass",numclass)
         print("NUM_EPOCHS",NUM_EPOCHS)
         print("Đường dẫn dẫn đến file checkpoint", checkpoint_path)
-        # print(f"[INFO] Pretraining completed!")
         # Load model from checkpoint
         self.load_checkpoint(checkpoint_path)
         # Continue training from the checkpoint
@@ -238,19 +220,5 @@ class Trainer:
             'best_dice': self.best_dice,
             'best_epoch': self.best_epoch
         }
-
-
-# if __name__ == "__main__":
-#     x1=torch.tensor(0.3)
-#     x2=torch.tensor(0.4)
-#     x=loss_func(x1,x2)
-#     print(x)
-#     print("lr0",lr0)
-#     print("bach_size",bach_size)
-#     print("weight_decay",weight_decay)
-#     print("input_image_width",input_image_width)
-#     print("input_image_height",input_image_height)
-#     print("numclass",numclass)
-#     print("NUM_EPOCHS",NUM_EPOCHS)
 
     

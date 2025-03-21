@@ -36,6 +36,8 @@ def main():
     import optimizer
     from result import export
     global trainer
+    SEED=42
+    torch.manual_seed(SEED)
     model1 = Unet.Unet(input_channel = 3)
     optimizer1 = optimizer.optimizer(model = model1)
     trainer = Trainer(model = model1, optimizer = optimizer1)

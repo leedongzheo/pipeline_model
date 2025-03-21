@@ -1,4 +1,3 @@
-import torch
 import argparse
 from dataset import*
 # import model.Unet
@@ -32,6 +31,7 @@ def get_args():
     parser.add_argument("--optimizer", type=str, choices=["Adam", "SGD"], default="Adam", help="Optimizer sử dụng, default = Adam")
     return parser.parse_args()
 def main():  
+    import torch
     from trainer import Trainer
     from model import Unet
     import optimizer

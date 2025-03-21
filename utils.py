@@ -23,7 +23,7 @@ def tensor_to_float(value):
 def to_numpy(tensor):
     # Move tensor to CPU and convert to NumPy array
     return tensor.cpu().detach().item()
-def dice_coeff(self, pred, target, smooth=1e-5):
+def dice_coeff(pred, target, smooth=1e-5):
     intersection = torch.sum(pred * target)
     return (2. * intersection + smooth) / (torch.sum(pred) + torch.sum(target) + smooth)
 # def inan():

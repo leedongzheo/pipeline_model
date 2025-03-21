@@ -75,7 +75,7 @@ class Trainer:
 
                 outputs = self.model(images)
                 loss = self.criterion(outputs, masks)
-                dice = self.dice_coeff(outputs, masks)
+                dice = dice_coeff(outputs, masks)
 
                 loss.backward()
                 self.optimizer.step()
@@ -95,7 +95,7 @@ class Trainer:
                     images, masks = images.to(self.device), masks.to(self.device)
                     outputs = self.model(images)
                     loss = self.criterion(outputs, masks)
-                    dice = self.dice_coeff(outputs, masks)
+                    dice = dice_coeff(outputs, masks)
                     val_loss += loss.item()
                     val_dice += dice.item()
                     if (i + 1) % self.log_interval == 0:
@@ -175,7 +175,7 @@ class Trainer:
 
                 outputs = self.model(images)
                 loss = self.criterion(outputs, masks)
-                dice = self.dice_coeff(outputs, masks)
+                dice = dice_coeff(outputs, masks)
 
                 loss.backward()
                 self.optimizer.step()
@@ -194,7 +194,7 @@ class Trainer:
                     images, masks = images.to(self.device), masks.to(self.device)
                     outputs = self.model(images)
                     loss = self.criterion(outputs, masks)
-                    dice = self.dice_coeff(outputs, masks)
+                    dice = dice_coeff(outputs, masks)
                     val_loss += loss.item()
                     val_dice += dice.item()
                     if (i + 1) % self.log_interval == 0:

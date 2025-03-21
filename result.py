@@ -2,7 +2,7 @@
 from config import*
 from train import*
 def export():
-    # output_folder = f"{BASE_OUTPUT}\\output_epoch{trainer.best_epoch}_dice{trainer.avg_val_dice:.4f}"
+
     source_file1='last_model.pth'
     source_file2='best_model.pth'
     path=f"output_epoch{trainer.best_epoch}_dice{trainer.best_dice:.4f}"

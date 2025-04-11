@@ -44,13 +44,13 @@ def main():
     trainer = Trainer(model = model1, optimizer = optimizer1)
     if args.mode == "train":
         trainer.train(trainLoader, validLoader)
-        export()
+        export(trainer)
     else:
         if not args.checkpoint:
             raise ValueError("Chế độ pretrain yêu cầu checkpoint!")
         trainer.pretrained(train_loader=trainLoader, val_loader=validLoader, checkpoint_path = args.checkpoint)
         # trainer.pretrained(trainLoader,validLoader,args.checkpoint)
-        export()
+        export(trainer)
 if __name__ == "__main__":
     args = get_args()
     main()

@@ -47,8 +47,8 @@ print(f"[INFO] found {len(validDS)} examples in the valid set...")
 # create the training and test data loaders
 
 trainLoader = DataLoader(trainDS, shuffle=True,
-	batch_size=BATCH_SIZE, pin_memory=PIN_MEMORY,
+	batch_size=bach_size, pin_memory=PIN_MEMORY,
 	num_workers=4)
 validLoader = DataLoader(validDS, shuffle=False,
-	batch_size=BATCH_SIZE, pin_memory=PIN_MEMORY,
+	batch_size=bach_size, pin_memory=PIN_MEMORY,
 	num_workers=4)

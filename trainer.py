@@ -38,6 +38,7 @@ class Trainer:
         self.checkpoint = torch.load(path, map_location=self.device)
         self.model.load_state_dict(self.checkpoint['model_state_dict'])
         self.optimizer.load_state_dict(self.checkpoint['optimizer_state_dict'])
+        self.start_epoch=self.checkpoint['epoch']
         self.train_losses, self.val_losses = self.checkpoint['train_losses'], self.checkpoint['val_losses']
         self.train_dices, self.val_dices = self.checkpoint['train_dices'], self.checkpoint['val_dices']
         self.best_dice, self.best_epoch = self.checkpoint['best_dice'], self.checkpoint['best_epoch']

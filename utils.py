@@ -14,6 +14,15 @@ def bce_dice_loss(inputs, target):
     bce_loss = nn.BCELoss()
     bce_score = bce_loss(inputs, target)
     return bce_score + dice_score
+    
+def iou(y_pred, y_true, eps=1e-7):
+    y_true_f = y_true.view(-1)  # flatten
+    y_pred_f = y_pred.view(-1)  # flatten
+
+    intersection = torch.sum(y_true_f * y_pred_f)
+    union = torch.sum(y_true_f) + torch.sum(y_pred_f) - intersection
+
+    return intersection / (union + eps)  # thêm eps để tránh chia 0
 def tensor_to_float(value):
     if isinstance(value, torch.Tensor):
         return value.cpu().item()  # Chuyển tensor về CPU và lấy giá trị float

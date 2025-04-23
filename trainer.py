@@ -172,7 +172,7 @@ class Trainer:
                 # Log every 15 steps
                 if (i + 1) % self.log_interval == 0:
                     train_loader_progress.set_postfix({'Step': i + 1, 'Loss': loss.item(), 'Dice': dice.item()})
-            self.scheduler.step()
+            self.scheduler.step(epoch)
             self.model.eval()
             with torch.no_grad():
                 val_loader_progress = tqdm(enumerate(val_loader), total=len(val_loader), desc="Validation")

@@ -17,7 +17,7 @@ class Trainer:
         self.best_model, self.best_dice, self.best_epoch = None, 0.0, 0
         self.log_interval = 1  # Số bước để log
          # Khởi tạo CosineAnnealingLR scheduler
-        scheduler = CosineAnnealingLR(self.optimizer, T_max=T_max, eta_min=lr_min)
+        self.scheduler = CosineAnnealingLR(self.optimizer, T_max=T_max, eta_min=lr_min)
 
     def save_checkpoint(self, epoch, dice, filename, mode = "pretrained"):
         if mode == "train":
@@ -84,7 +84,7 @@ class Trainer:
                 # Log every 15 steps
                 if (i + 1) % self.log_interval == 0:
                     train_loader_progress.set_postfix({'Step': i + 1, 'Loss': loss.item(), 'Dice': dice.item()})
-            scheduler.step()
+            self.scheduler.step()
 
             self.model.eval()
             with torch.no_grad():
@@ -105,7 +105,7 @@ class Trainer:
             avg_train_dice = train_dice / len(train_loader)
             self.avg_val_dice = val_dice / len(val_loader)
 
-            print(f"Epoch {epoch+1}: LR {scheduler.get_last_lr()[0]}, Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}")
+            print(f"Epoch {epoch+1}: LR {self.scheduler.get_last_lr()[0]}, Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}")
             self.train_losses.append(avg_train_loss)
             self.val_losses.append(avg_val_loss)
             self.train_dices.append(avg_train_dice)
@@ -171,7 +171,7 @@ class Trainer:
                 # Log every 15 steps
                 if (i + 1) % self.log_interval == 0:
                     train_loader_progress.set_postfix({'Step': i + 1, 'Loss': loss.item(), 'Dice': dice.item()})
-            scheduler.step()
+            self.scheduler.step()
             self.model.eval()
             with torch.no_grad():
                 val_loader_progress = tqdm(enumerate(val_loader), total=len(val_loader), desc="Validation")
@@ -190,7 +190,7 @@ class Trainer:
             avg_train_dice = train_dice / len(train_loader)
             self.avg_val_dice = val_dice / len(val_loader)
 
-            print(f"Epoch {epoch+1}: LR {scheduler.get_last_lr()[0]}, Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}")
+            print(f"Epoch {epoch+1}: LR {self.scheduler.get_last_lr()[0]}, Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}")
             self.train_losses.append(avg_train_loss)
             self.val_losses.append(avg_val_loss)
             self.train_dices.append(avg_train_dice)

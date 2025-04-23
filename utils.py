@@ -4,7 +4,7 @@ def dice_coef_loss(inputs, target, smooth=1e-6):
     """
     Dice Loss: Thước đo sự chồng lấn giữa output và ground truth.
     """
-    inputs = torch.sigmoid(inputs)  # Chuyển logits về xác suất
+    # inputs = torch.sigmoid(inputs)  # Chuyển logits về xác suất
     intersection = (inputs * target).sum()
     union = inputs.sum() + target.sum()
     dice_score = (2.0 * intersection + smooth) / (union + smooth)

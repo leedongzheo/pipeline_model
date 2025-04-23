@@ -26,7 +26,7 @@ import sys
 SEED=42
 torch.manual_seed(SEED)
 # THAM SỐ VỪA LÀ HẰNG SỐ VỪA THAY ĐỔI
-INIT_LR = 0.0001
+INIT_LR = 0.1
 # lr0= INIT_LR
 BATCH_SIZE = 8
 WEIGHT_DECAY=1e-6
@@ -46,7 +46,8 @@ input_image_width, input_image_height = args.img_size if args.img_size else [INP
 numclass = args.numclass if args.numclass else NUM_CLASSES
 # THAM SỐ LUÔN THAY ĐỔI THEO nhap.py
 NUM_EPOCHS = args.epoch
-
+T_max = NUM_EPOCHS  # T_max là số epoch bạn muốn dùng cho giảm lr
+lr_min = 0.0001  # lr_min là learning rate tối thiểu
 # CÁC THAM SỐ KHÁC
 DEVICE=torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 PIN_MEMORY = True if str(DEVICE) == "cuda:0" else False

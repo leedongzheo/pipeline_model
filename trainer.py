@@ -112,7 +112,7 @@ class Trainer:
             self.val_dices.append(self.avg_val_dice)
 
             self.save_checkpoint(epoch + 1, self.best_dice, f'last_model.pth', mode="train")
-            if val_dice > self.best_dice:
+            if self.avg_val_dice > self.best_dice:
                 self.best_dice, self.best_epoch = val_dice, epoch + 1
                 self.save_checkpoint(epoch +1, self.best_dice, f'best_model.pth', mode="train")
                 self.early_stop_counter = 0

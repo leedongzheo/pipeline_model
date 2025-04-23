@@ -17,7 +17,8 @@ class Trainer:
         self.best_model, self.best_dice, self.best_epoch = None, 0.0, 0
         self.log_interval = 1  # Số bước để log
          # Khởi tạo CosineAnnealingLR scheduler
-        self.scheduler = CosineAnnealingLR(self.optimizer, T_max=T_max, eta_min=lr_min)
+        # self.scheduler = CosineAnnealingLR(self.optimizer, T_max=T_max, eta_min=lr_min)
+        self.scheduler = MultiStepLR(optimizer, milestones=[20, 40, 60], gamma=0.1)
 
     def save_checkpoint(self, epoch, dice, filename, mode = "pretrained"):
         if mode == "train":

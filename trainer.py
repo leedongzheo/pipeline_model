@@ -119,13 +119,15 @@ class Trainer:
             avg_train_iou = train_iou / len(train_loader)
             avg_val_iou = val_iou / len(val_loader)
 
-            # print(f"Epoch {epoch+1}: LR {self.scheduler.get_last_lr()[0]}, Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}")
-            print(f"Epoch {epoch+1}: Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}, Train Iou {avg_train_iou:.4f}, Val Iou {avg_val_iou:.4f}")            self.train_losses.append(avg_train_loss)
+            # print(f"Epoch {epoch+1}: LR {self.scheduler.get_last_lr()[0]}, Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}, Train Iou {avg_train_iou:.4f}, Val Iou {avg_val_iou:.4f}")
+            print(f"Epoch {epoch+1}: Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}, Train Iou {avg_train_iou:.4f}, Val Iou {avg_val_iou:.4f}")           
+            self.train_losses.append(avg_train_loss)
             self.val_losses.append(avg_val_loss)
             self.train_dices.append(avg_train_dice)
             self.val_dices.append(self.avg_val_dice)
             self.train_ious.append(avg_train_iou)
-            self.val_ious.append(avg_val_iou)            
+            self.val_ious.append(avg_val_iou)    
+             
 
             self.save_checkpoint(epoch + 1, self.best_dice, f'last_model.pth', mode="train")
             if self.avg_val_dice > self.best_dice:
@@ -214,7 +216,7 @@ class Trainer:
             avg_train_iou = train_iou / len(train_loader)
             avg_val_iou = val_iou / len(val_loader)
 
-            # print(f"Epoch {epoch+1}: LR {self.scheduler.get_last_lr()[0]}, Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}")
+            # print(f"Epoch {epoch+1}: LR {self.scheduler.get_last_lr()[0]}, Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}, Train Iou {avg_train_iou:.4f}, Val Iou {avg_val_iou:.4f}")
             print(f"Epoch {epoch+1}: Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}, Train Iou {avg_train_iou:.4f}, Val Iou {avg_val_iou:.4f}")
             self.train_losses.append(avg_train_loss)
             self.val_losses.append(avg_val_loss)

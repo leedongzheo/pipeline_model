@@ -4,7 +4,7 @@ from train import*
 def export(trainer):
     source_file1='last_model.pth'
     source_file2='best_model.pth'
-    path=f"output_epoch{trainer.best_epoch}_dice{trainer.best_dice:.4f}"
+    path=f"output_epoch{trainer.best_epoch_dice}_dice{trainer.best_dice:.4f}"
     output_folder = os.path.join(BASE_OUTPUT,path)
     os.makedirs(output_folder, exist_ok=True)
     # Di chuyển
@@ -45,7 +45,7 @@ def export(trainer):
     val_ious = tensor_to_float(checkpoint.get('val_ious', []))
     
     best_dice = tensor_to_float(checkpoint.get('best_dice', None))
-    best_epoch = tensor_to_float(checkpoint.get('best_epoch', None))
+    best_epoch_dice = tensor_to_float(checkpoint.get('best_epoch_dice', None))
     epoch = checkpoint.get('epoch', None)
     # start_epoch=checkpoint.get('start_epoch', None) + 1
     epochs = list(range(1, epoch + 1))
@@ -59,7 +59,7 @@ def export(trainer):
         'train_ious': train_ious,
         'val_ious': val_ious,
         'best_dice': [best_dice] * len(epochs),
-        'best_epoch': [best_epoch] * len(epochs),
+        'best_epoch_dice': [best_epoch_dice] * len(epochs),
         'epoch': epochs
     })
 

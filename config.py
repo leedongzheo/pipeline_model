@@ -28,7 +28,7 @@ from torch.optim.lr_scheduler import MultiStepLR
 SEED=42
 torch.manual_seed(SEED)
 # THAM SỐ VỪA LÀ HẰNG SỐ VỪA THAY ĐỔI
-INIT_LR = 0.1
+INIT_LR = 0.0001
 # lr0= INIT_LR
 BATCH_SIZE = 8
 WEIGHT_DECAY=1e-6

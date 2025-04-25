@@ -40,6 +40,10 @@ def export(trainer):
     val_losses = tensor_to_float(checkpoint.get('val_losses', []))
     train_dices = tensor_to_float(checkpoint.get('train_dices', []))
     val_dices = tensor_to_float(checkpoint.get('val_dices', []))
+    
+    train_ious = tensor_to_float(checkpoint.get('train_ious', []))
+    val_ious = tensor_to_float(checkpoint.get('val_ious', []))
+    
     best_dice = tensor_to_float(checkpoint.get('best_dice', None))
     best_epoch = tensor_to_float(checkpoint.get('best_epoch', None))
     epoch = checkpoint.get('epoch', None)
@@ -52,6 +56,8 @@ def export(trainer):
         'val_losses': val_losses,
         'train_dices': train_dices,
         'val_dices': val_dices,
+        'train_ious': train_ious,
+        'val_ious': val_ious,
         'best_dice': [best_dice] * len(epochs),
         'best_epoch': [best_epoch] * len(epochs),
         'epoch': epochs
@@ -68,23 +74,54 @@ def export(trainer):
     # df.info()
 
     # Plot Losses
-    plt.figure(figsize=(12, 5))
-    plt.subplot(1, 2, 1)
+    plt.figure(figsize=(15, 5))
+    max_epoch = df['epoch'].max()
+    xticks_range = range(0, max_epoch + 1, 20)
+    
+    plt.subplot(1, 3, 1)
     plt.plot(df['epoch'], df['train_losses'], label='Train Loss')
     plt.plot(df['epoch'], df['val_losses'], label='Valid Loss')
     plt.title('Training and Validation Losses')
     plt.xlabel('Epoch')
     plt.ylabel('Loss')
     plt.legend()
+    plt.xticks(xticks_range)
+    # Trục x đến max_epoch, trục y đến max loss thật
+    plt.xlim(0, df['epoch'].max())
+    plt.ylim(0, max(df['train_losses'].max(), df['val_losses'].max()))
+
+    # Tỷ lệ 1:1 nhưng giữ nguyên scale gốc
+    plt.gca().set_aspect('auto', adjustable='box')
 
     # Plot Dice Coefficients
-    plt.subplot(1, 2, 2)
+    plt.subplot(1, 3, 2)
     plt.plot(df['epoch'], df['train_dices'], label='Train Dice')
     plt.plot(df['epoch'], df['val_dices'], label='Valid Dice')
     plt.title('Training and Validation Dice Coefficients')
     plt.xlabel('Epoch')
     plt.ylabel('Dice Coefficient')
     plt.legend()
+    plt.xticks(xticks_range)
+    # plt.gca().set_aspect('equal', adjustable='box')
+    plt.xlim(0, max_epoch)
+    plt.ylim(0, max(df['train_dices'].max(), df['val_dices'].max()))
+    plt.gca().set_aspect('auto', adjustable='box')
+    
+    # Plot IOU
+    plt.subplot(1, 3, 3)
+    plt.plot(df['epoch'], df['train_ious'], label='Train Iou')
+    plt.plot(df['epoch'], df['val_ious'], label='Valid Iou')
+    plt.title('Training and Validation IOU')
+    plt.xlabel('Epoch')
+    plt.ylabel('IOU')
+    plt.legend()
+    plt.xticks(xticks_range)
+    # plt.gca().set_aspect('equal', adjustable='box')
+    # Cân bằng trục x/y
+    plt.xlim(0, max_epoch)
+    plt.ylim(0, max(df['train_ious'].max(), df['val_ious'].max()))
+    plt.gca().set_aspect('auto', adjustable='box')
+    
     # Vẽ đồ thị
     plt.tight_layout()
         # Save the plot to a file

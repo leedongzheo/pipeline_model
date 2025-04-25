@@ -135,8 +135,8 @@ class Trainer:
              
 
             self.save_checkpoint(epoch + 1, self.best_dice, self.best_iou, f'last_model.pth', mode="train")
-            if self.avg_val_iou > self.best_iou:
-                self.best_iou, self.best_epoch_iou = self.avg_val_iou, epoch + 1
+            if avg_val_iou > self.best_iou:
+                self.best_iou, self.best_epoch_iou = avg_val_iou, epoch + 1
             if self.avg_val_dice > self.best_dice:
                 self.best_dice, self.best_epoch_dice = self.avg_val_dice, epoch + 1
                 self.save_checkpoint(epoch +1, self.best_dice, self.best_iou, f'best_model.pth', mode="train")
@@ -233,8 +233,8 @@ class Trainer:
             self.val_ious.append(avg_val_iou)
 
             self.save_checkpoint(epoch + 1, self.best_dice, self.best_iou, f'last_model.pth')
-            if self.avg_val_iou > self.best_iou:
-                self.best_iou, self.best_epoch_iou = self.avg_val_iou, epoch + 1
+            if avg_val_iou > self.best_iou:
+                self.best_iou, self.best_epoch_iou = avg_val_iou, epoch + 1
                 
             if self.avg_val_dice > self.best_dice:
                 self.best_dice, self.best_epoch_dice = self.avg_val_dice, epoch + 1

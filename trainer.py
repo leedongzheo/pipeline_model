@@ -14,6 +14,7 @@ class Trainer:
         self.early_stop_counter = 0
         self.train_losses, self.val_losses = [], []
         self.train_dices, self.val_dices = [], []
+        self.train_ious, self.val_ious = [], []
         self.best_model, self.best_dice, self.best_epoch = None, 0.0, 0
         self.log_interval = 1  # Số bước để log
          # Khởi tạo CosineAnnealingLR scheduler
@@ -32,6 +33,8 @@ class Trainer:
             'val_losses': self.val_losses,
             'train_dices': self.train_dices,
             'val_dices': self.val_dices,
+            'train_ious': self.train_ious,
+            'val_ious': self.val_ious,
             'best_dice': dice,
             'best_epoch': self.best_epoch,
         }
@@ -44,6 +47,7 @@ class Trainer:
         self.start_epoch=self.checkpoint['epoch']
         self.train_losses, self.val_losses = self.checkpoint['train_losses'], self.checkpoint['val_losses']
         self.train_dices, self.val_dices = self.checkpoint['train_dices'], self.checkpoint['val_dices']
+        self.train_ious, self.val_ious = self.checkpoint['train_ious'], self.checkpoint['val_ious']
         self.best_dice, self.best_epoch = self.checkpoint['best_dice'], self.checkpoint['best_epoch']
 
     def train(self, train_loader, val_loader):
@@ -62,6 +66,8 @@ class Trainer:
             val_loss = 0.0
             train_dice = 0.0
             val_dice = 0.0
+            train_iou = 0.0
+            val_iou = 0.0
 
             # Training loop with progress bar
             print(f'\nEpoch {epoch + 1}/{self.num_epochs}')
@@ -75,16 +81,18 @@ class Trainer:
                 outputs = self.model(images)
                 loss = self.criterion(outputs, masks)
                 dice = dice_coeff(outputs, masks)
+                iou = iou_core(outputs, masks)
 
                 loss.backward()
                 self.optimizer.step()
 
                 train_loss += loss.item()
                 train_dice += dice.item()
+                train_iou += iou.item()
 
                 # Log every 15 steps
                 if (i + 1) % self.log_interval == 0:
-                    train_loader_progress.set_postfix({'Step': i + 1, 'Loss': loss.item(), 'Dice': dice.item()})
+                    train_loader_progress.set_postfix({'Step': i + 1, 'Loss': loss.item(), 'Dice': dice.item(), 'Iou': iou.item()})
             # self.scheduler.step()
 
             self.model.eval()
@@ -95,23 +103,29 @@ class Trainer:
                     outputs = self.model(images)
                     loss = self.criterion(outputs, masks)
                     dice = dice_coeff(outputs, masks)
+                    iou = iou_core(outputs, masks)
+                    
                     val_loss += loss.item()
                     val_dice += dice.item()
+                    val_iou += iou.item()
                     if (i + 1) % self.log_interval == 0:
-                        val_loader_progress.set_postfix({'Step': i + 1, 'Loss': loss.item(), 'Dice': dice.item()})
+                        val_loader_progress.set_postfix({'Step': i + 1, 'Loss': loss.item(), 'Dice': dice.item(), 'Iou': iou.item()})
 
 
             avg_train_loss = train_loss / len(train_loader)
             avg_val_loss = val_loss / len(val_loader)
             avg_train_dice = train_dice / len(train_loader)
             self.avg_val_dice = val_dice / len(val_loader)
+            avg_train_iou = train_iou / len(train_loader)
+            avg_val_iou = val_iou / len(val_loader)
 
             # print(f"Epoch {epoch+1}: LR {self.scheduler.get_last_lr()[0]}, Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}")
-            print(f"Epoch {epoch+1}: Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}")
-            self.train_losses.append(avg_train_loss)
+            print(f"Epoch {epoch+1}: Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}, Train Iou {avg_train_iou:.4f}, Val Iou {avg_val_iou:.4f}")            self.train_losses.append(avg_train_loss)
             self.val_losses.append(avg_val_loss)
             self.train_dices.append(avg_train_dice)
             self.val_dices.append(self.avg_val_dice)
+            self.train_ious.append(avg_train_iou)
+            self.val_ious.append(avg_val_iou)            
 
             self.save_checkpoint(epoch + 1, self.best_dice, f'last_model.pth', mode="train")
             if self.avg_val_dice > self.best_dice:
@@ -150,6 +164,8 @@ class Trainer:
             val_loss = 0.0
             train_dice = 0.0
             val_dice = 0.0
+            train_iou = 0.0
+            val_iou = 0.0
 
             # Training loop with progress bar
             print(f'\nEpoch {epoch + 1}/{self.num_epochs}')
@@ -163,16 +179,18 @@ class Trainer:
                 outputs = self.model(images)
                 loss = self.criterion(outputs, masks)
                 dice = dice_coeff(outputs, masks)
+                iou = iou_core(outputs, masks)
 
                 loss.backward()
                 self.optimizer.step()
 
                 train_loss += loss.item()
                 train_dice += dice.item()
+                train_iou += iou.item()
 
                 # Log every 15 steps
                 if (i + 1) % self.log_interval == 0:
-                    train_loader_progress.set_postfix({'Step': i + 1, 'Loss': loss.item(), 'Dice': dice.item()})
+                    train_loader_progress.set_postfix({'Step': i + 1, 'Loss': loss.item(), 'Dice': dice.item(), 'Iou': iou.item()})
             # self.scheduler.step(epoch)
             self.model.eval()
             with torch.no_grad():
@@ -182,22 +200,28 @@ class Trainer:
                     outputs = self.model(images)
                     loss = self.criterion(outputs, masks)
                     dice = dice_coeff(outputs, masks)
+                    iou = iou_core(outputs, masks)
                     val_loss += loss.item()
                     val_dice += dice.item()
+                    val_iou += iou.item()
                     if (i + 1) % self.log_interval == 0:
-                      val_loader_progress.set_postfix({'Step': i + 1, 'Loss': loss.item(), 'Dice': dice.item()})
+                      val_loader_progress.set_postfix({'Step': i + 1, 'Loss': loss.item(), 'Dice': dice.item(), 'Iou': iou.item()})
 
             avg_train_loss = train_loss / len(train_loader)
             avg_val_loss = val_loss / len(val_loader)
             avg_train_dice = train_dice / len(train_loader)
             self.avg_val_dice = val_dice / len(val_loader)
+            avg_train_iou = train_iou / len(train_loader)
+            avg_val_iou = val_iou / len(val_loader)
 
             # print(f"Epoch {epoch+1}: LR {self.scheduler.get_last_lr()[0]}, Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}")
-            print(f"Epoch {epoch+1}: Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}")
+            print(f"Epoch {epoch+1}: Train Loss {avg_train_loss:.4f}, Val Loss {avg_val_loss:.4f}, Train Dice {avg_train_dice:.4f}, Val Dice {self.avg_val_dice:.4f}, Train Iou {avg_train_iou:.4f}, Val Iou {avg_val_iou:.4f}")
             self.train_losses.append(avg_train_loss)
             self.val_losses.append(avg_val_loss)
             self.train_dices.append(avg_train_dice)
             self.val_dices.append(self.avg_val_dice)
+            self.train_ious.append(avg_train_iou)
+            self.val_ious.append(avg_val_iou)
 
             self.save_checkpoint(epoch + 1, self.best_dice, f'last_model.pth')
             if self.avg_val_dice > self.best_dice:
@@ -223,6 +247,8 @@ class Trainer:
             'val_losses': self.val_losses,
             'train_dices': self.train_dices,
             'val_dices': self.val_dices,
+            'train_ious': self.train_ious,
+            'val_ious' : self.val_ious,
             'best_dice': self.best_dice,
             'best_epoch': self.best_epoch
         }

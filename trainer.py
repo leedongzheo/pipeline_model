@@ -2,7 +2,7 @@ from config import*
 from utils import*
 from optimizer import*
 class Trainer:
-    def __init__(self, model, optimizer, criterion = loss_func, patience = 10, device = DEVICE):
+    def __init__(self, model, optimizer, criterion = loss_func, patience = 20, device = DEVICE):
         # self.model = model.to(device)
         self.model = model.to(DEVICE)
         self.num_epochs = NUM_EPOCHS
